@@ -21,6 +21,7 @@ If you run into an issue, create an issue in the Issues tab on GitHub, with a sc
  ~/.config_unity3d/Wolfire Games/Receiver2/Guns – Linux <br />
  - Copy the file called _"MP5_Plugin"_ in **MP5N_(OS).rar** to (where you have R2 installed) **Receiver 2\BepinEx\plugins**
  ## Usage
+ - If you insert a mag into the gun with its slide closed, it'll take a bit of force to really push it in, press Z (by default) (I hate QWERTY keyboards) to really slam that bad boy in there
  - Go to the debug menu, and start the custom campaign, or go to the debug menu and spawn the gun + mag in.<br>
  - Press V (by default) to change fire modes.<br>
  - The sights are zeroed to like 5-10 meters or something
