@@ -11,7 +11,7 @@ If you run into an issue, create an issue in the Issues tab on GitHub, with a sc
 ## Requirements
  - [BepinEx 5](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21)
  - Latest legit version of Receiver 2
- - The [STM-9 mod](https://github.com/CiarenceW/STM9_plugin/releases/tag/v1.2.0) (shameless self-plug) or the [latest UMP release](https://github.com/Szikaka-97/UMP_Plugin/releases/tag/1.0.3)
+ - The latest version of the [modding kit](https://github.com/Szikaka-97/Receiver2ModdingKit/releases/download/ver1%2C0%2C0/Receiver2ModdingKit.-.Release.zip)
 ## Download & Installation
 (You can watch [this](https://www.youtube.com/watch?v=xe5f_CwQQVo) video guide in case something isn't clear)  							
  - Download the files in the releases section.<br />
