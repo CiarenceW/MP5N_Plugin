@@ -12,14 +12,14 @@ namespace MP5_plugin
 {
     public class MP5Script : ModGunScript
 	{
-		private static ConfigEntry<string> configEntry;
+		private static ConfigEntry<int> configEntry;
 		//thanks Szikaka for having already done the code of the worse version of this gun, lol
 		private float slide_forward_speed = -8;
 		private float hammer_accel = -5000;
 		private float m_charging_handle_amount;
 		private int fired_bullet_count;
 		private float safety_held_down;
-		public List<MP5Script> stocks;
+		public StockScript[] stocks;
 		private Vector3 vector = new Vector3(0, 2, 0);
 		public Transform fixed_stock_component;
 		public Transform moving_stock_component;
@@ -65,6 +65,7 @@ namespace MP5_plugin
 			pooled_muzzle_flash = ((GunScript)ReceiverCoreScript.Instance().generic_prefabs.First(it => { return it is GunScript && ((GunScript)it).gun_model == GunModel.BerettaM9; })).pooled_muzzle_flash;
 			//loaded_cartridge_prefab = ((GunScript)ReceiverCoreScript.Instance().generic_prefabs.First(it => { return it is GunScript && ((GunScript)it).gun_model == GunModel.BerettaM9; })).loaded_cartridge_prefab;
 			moving_stock.transform = moving_stock_component;
+
 		}
 		public override void AwakeGun()
 		{
@@ -72,6 +73,14 @@ namespace MP5_plugin
 		}
 		public override void UpdateGun()
 		{
+			transform.Find("pose_aim_down_sights").localPosition = transform.Find(stocks[configEntry.Value].stock_name + "/pose_ads").localPosition; //this is bad, this is HATEFUL, don't do this if you love yourself. Optimizing too much will make your parents weep.
+			rotation_transfer_x_max = stocks[configEntry.Value].recoil_trans_x_max;
+			rotation_transfer_x_min = stocks[configEntry.Value].recoil_trans_x_min;
+			rotation_transfer_y_max = stocks[configEntry.Value].recoil_trans_y_max;
+			rotation_transfer_y_min = stocks[configEntry.Value].recoil_trans_y_min;
+			sway_multiplier = stocks[configEntry.Value].shake_amount;
+			mass = mass + stocks[configEntry.Value].extra_mass;
+
 			current_firing_mode_index = typeof(GunScript).GetField("current_firing_mode_index", BindingFlags.Instance | BindingFlags.NonPublic); //reflections to use the currect_firing_mode_index in our script
 
 			firing_modes[0].sound_event_path = sound_safety_on;
