@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>MP5_plugin</AssemblyName>
-    <Description>My first plugin</Description>
-    <Version>1.0.0</Version>
+    <Description>cool thang</Description>
+    <Version>2.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -24,20 +24,20 @@
     <Reference Include="0Harmony">
       <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\Assembly-CSharp.dll</HintPath>
+    <Reference Include="0Harmony20">
+      <HintPath>C:\Users\ciarence\source\repos\MagLoaderThing\Librairies\0Harmony20.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="ImGui">
-      <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\ImGui.dll</HintPath>
+    <Reference Include="BepInEx.Harmony">
+      <HintPath>C:\Users\ciarence\source\repos\MagLoaderThing\Librairies\BepInEx.Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="R2CustomSounds">
-      <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\R2CustomSounds.dll</HintPath>
+    <Reference Include="ImGui">
+      <HintPath>C:\Users\ciarence\source\repos\MagLoaderThing\Librairies\ImGui.dll</HintPath>
     </Reference>
     <Reference Include="Receiver2ModdingKit">
-      <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\Receiver2ModdingKit.dll</HintPath>
+      <HintPath>..\LibrairiesR2\Receiver2ModdingKit.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\UnityEngine.dll</HintPath>
@@ -46,10 +46,10 @@
       <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="Wolfire">
-      <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\Wolfire.dll</HintPath>
+      <HintPath>C:\Users\ciarence\source\repos\MagLoaderThing\Librairies\Wolfire.dll</HintPath>
     </Reference>
     <Reference Include="Wolfire.Receiver2">
-      <HintPath>C:\Users\coren\source\repos\GoodOldIMGUImenu\Libraries\Wolfire.Receiver2.dll</HintPath>
+      <HintPath>C:\Users\ciarence\source\repos\MagLoaderThing\Librairies\Wolfire.Receiver2.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

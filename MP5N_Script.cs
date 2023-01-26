@@ -5,20 +5,30 @@ using Receiver2;
 using Receiver2ModdingKit;
 using UnityEngine;
 using RewiredConsts;
+using BepInEx.Configuration;
 using System.Reflection;
 
 namespace MP5_plugin
 {
     public class MP5Script : ModGunScript
 	{
+		private static ConfigEntry<string> configEntry;
 		//thanks Szikaka for having already done the code of the worse version of this gun, lol
 		private float slide_forward_speed = -8;
 		private float hammer_accel = -5000;
 		private float m_charging_handle_amount;
 		private int fired_bullet_count;
 		private float safety_held_down;
+		public List<MP5Script> stocks;
+		private Vector3 vector = new Vector3(0, 2, 0);
+		public Transform fixed_stock_component;
+		public Transform moving_stock_component;
+		private LinearMover moving_stock;
+		public Transform pistol_stock_component;
+		FieldInfo current_firing_mode_index;
+        FieldInfo yoke_open;
 
-		private readonly float[] slide_push_hammer_curve = new float[] {
+        private readonly float[] slide_push_hammer_curve = new float[] {
 			0,
 			0,
 			0.2f,
@@ -54,6 +64,7 @@ namespace MP5_plugin
 		{
 			pooled_muzzle_flash = ((GunScript)ReceiverCoreScript.Instance().generic_prefabs.First(it => { return it is GunScript && ((GunScript)it).gun_model == GunModel.BerettaM9; })).pooled_muzzle_flash;
 			//loaded_cartridge_prefab = ((GunScript)ReceiverCoreScript.Instance().generic_prefabs.First(it => { return it is GunScript && ((GunScript)it).gun_model == GunModel.BerettaM9; })).loaded_cartridge_prefab;
+			moving_stock.transform = moving_stock_component;
 		}
 		public override void AwakeGun()
 		{
@@ -61,21 +72,23 @@ namespace MP5_plugin
 		}
 		public override void UpdateGun()
 		{
-			FieldInfo current_firing_mode_index;
-
 			current_firing_mode_index = typeof(GunScript).GetField("current_firing_mode_index", BindingFlags.Instance | BindingFlags.NonPublic); //reflections to use the currect_firing_mode_index in our script
-
-            if (Input.GetKeyDown("n"))
-			{
-				Debug.Log(current_firing_mode_index.GetValue(this));
-            }
 
 			firing_modes[0].sound_event_path = sound_safety_on;
 			firing_modes[1].sound_event_path = sound_safety_off;
 			firing_modes[2].sound_event_path = sound_safety_off;
 			firing_modes[3].sound_event_path = sound_safety_off;
 
-			if (slide.amount == 0 && magazine.amount != 0) //checks if the mag is inserted, and if the slide is closed
+            yoke_open = typeof(GunScript).GetField("yoke_open", BindingFlags.Instance | BindingFlags.NonPublic); //reflections to use the yoke_open in our script, that way we'll be able to control its amount
+
+			ChamberState chamber = cylinder.chambers[0]; //ChamberState isn't static, sadge, we have to instanciate it ourselves, we know there's only 1 chamber, so it's the 0th one.
+
+            if ((float)yoke_open.GetValue(this) > 0.3f && chamber.HasBullet()) //phew, yoke_open is a float, so we can just cast it as a float, get its value, and be on our way, also check if there's a cartridge present, otherwise it throws around a NullException.
+			{
+				chamber.BulletFallFromChamber(vector);
+			}
+
+			if (slide.amount == 0 && magazine.amount == 0) //checks if the mag is inserted, and if the slide is closed
             {
 				force_wrongly_seated_mag = true;//if it's the case, makes the mag wrongly seated, to force the player to slap the mag, (kinda like in Ground Branch), to simulate the issues that come with inserting a mag with a chambered round in a real MP5.
             }
@@ -85,11 +98,11 @@ namespace MP5_plugin
 				mag_seated_wrong = false;
             }
 
-			if ((int)current_firing_mode_index.GetValue(this) == 2) //burst fire logic, checks if the current firing mode is the second semi one
+			if (IsBurstFireOn()) //burst fire logic, checks if the current firing mode is the second semi one
             {
 				_disconnector_needs_reset = fired_bullet_count >= 3;
 			}
-			if (trigger.amount == 0)
+			if (trigger.amount == 0 || IsBurstFireOn())
 			{
 				fired_bullet_count = 0;
 			}
@@ -169,6 +182,10 @@ namespace MP5_plugin
 			trigger.UpdateDisplay();
 
 			UpdateAnimatedComponents();
+		}
+		private bool IsBurstFireOn()
+		{
+			return (int)current_firing_mode_index.GetValue(this) == 2;
 		}
 	}
 }

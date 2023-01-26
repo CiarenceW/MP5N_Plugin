@@ -6,7 +6,7 @@ using BepInEx;
 namespace MP5_plugin
 {
     [BepInDependency("pl.szikaka.receiver_2_modding_kit")]
-    [BepInPlugin("Ciarencew.MP5N", "MP5N Plugin", "1.0.0")]
+    [BepInPlugin("Ciarencew.MP5N", "MP5N Plugin", "2.0.0")]
     internal class MainPlugin : BaseUnityPlugin
     {
         public static MainPlugin instance
