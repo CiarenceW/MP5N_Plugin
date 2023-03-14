@@ -16,7 +16,7 @@ namespace MP5_plugin
 		private float hammer_accel = -5000;
 		private float m_charging_handle_amount;
 		private int fired_bullet_count;
-		private float safety_held_down;
+		private float safety_held_time;
 
 		private readonly float[] slide_push_hammer_curve = new float[] {
 			0,
@@ -61,15 +61,6 @@ namespace MP5_plugin
 		}
 		public override void UpdateGun()
 		{
-			FieldInfo current_firing_mode_index;
-
-			current_firing_mode_index = typeof(GunScript).GetField("current_firing_mode_index", BindingFlags.Instance | BindingFlags.NonPublic); //reflections to use the currect_firing_mode_index in our script
-
-            if (Input.GetKeyDown("n"))
-			{
-				Debug.Log(current_firing_mode_index.GetValue(this));
-            }
-
 			firing_modes[0].sound_event_path = sound_safety_on;
 			firing_modes[1].sound_event_path = sound_safety_off;
 			firing_modes[2].sound_event_path = sound_safety_off;
@@ -85,16 +76,16 @@ namespace MP5_plugin
 				mag_seated_wrong = false;
             }
 
-			if ((int)current_firing_mode_index.GetValue(this) == 2) //burst fire logic, checks if the current firing mode is the second semi one
+			if (_select_fire.amount == 0.67f && !_disconnector_needs_reset) //burst fire logic, checks if the select fire component is at the burst fire value, and if the disconnector doesn't need a reset.
             {
 				_disconnector_needs_reset = fired_bullet_count >= 3;
 			}
-			if (trigger.amount == 0)
-			{
-				fired_bullet_count = 0;
-			}
+            if (slide.amount > 0f && trigger.amount > 0f && _select_fire.amount < 1f) //prevents the gun from going off after racking the slide back on non-auto fire modes when the trigger is held
+            {
+                _disconnector_needs_reset = true;
+            }
 
-			hammer.asleep = true;
+            hammer.asleep = true;
 			hammer.accel = hammer_accel;
 
 			if (slide.amount > 0 && _hammer_state != 3)
@@ -102,11 +93,35 @@ namespace MP5_plugin
 				hammer.amount = Mathf.Max(hammer.amount, InterpCurve(slide_push_hammer_curve, slide.amount));
 			}
 
-			if (hammer.amount == 1) _hammer_state = 3; 
+			if (hammer.amount == 1) _hammer_state = 3;
 
-			if (trigger.amount == 0) _disconnector_needs_reset = false;
+			if (trigger.amount == 0) //checks if the trigger is not being pressed
+            {
+				fired_bullet_count = 0;
+                _disconnector_needs_reset = false;  //if so, mark the disconnector as having been reset.
+			}
 
-			if (IsSafetyOn())
+            if (!IsSafetyOn())
+            {
+                if (player_input.GetButton(RewiredConsts.Action.Toggle_Safety_Auto_Mod))
+                {
+                    safety_held_time += Time.deltaTime;
+                }
+                else
+                {
+                    safety_held_time = 0;
+                }
+
+                if (safety_held_time >= 0.4f)
+                {
+                    SwitchFireMode();
+                }
+            }
+            else
+            {
+                safety_held_time = 0;
+            }
+            if (IsSafetyOn())
 			{ // Safety blocks the trigger from moving
 				trigger.amount = Mathf.Min(trigger.amount, 0.1f);
 
@@ -144,9 +159,10 @@ namespace MP5_plugin
 			{ // If hammer dropped and hammer was cocked then fire gun and decock hammer
 				TryFireBullet(1, FireBullet);
 
-				_disconnector_needs_reset = (int)current_firing_mode_index.GetValue(this) == 1;
+				_disconnector_needs_reset = _select_fire.amount < 0.67f;
 
-				fired_bullet_count++;
+				if (_select_fire.amount == 0.67f) fired_bullet_count++;
+				else fired_bullet_count = 0;
 
 				_hammer_state = 0;
 			}
