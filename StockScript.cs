@@ -18,5 +18,8 @@ namespace MP5_plugin
         public float recoil_trans_y_max;
         public float shake_amount;
         public float extra_mass;
+        public bool movable_stock;
+        public LinearMover mover = new LinearMover();
+
     }
 }
